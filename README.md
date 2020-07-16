@@ -2,6 +2,11 @@
 
 The Spectator events viewer
 
+# Link to the deployed live version
+
+I've used Nerlify service to deploy the live version of application
+[https://yevhen-sydorov-thespectator-events-list.netlify.app/](https://yevhen-sydorov-thespectator-events-list.netlify.app/)
+
 ## Boilerplate
 
 Boilerplate for this project was create using Create React App for Typescript <br />
