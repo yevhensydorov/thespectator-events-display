@@ -100,4 +100,4 @@ If I had more time I'd create next features/improvements:
 3. App definitely needs styles to add
 4. Better error handling to display an exact message which comes from the API
 5. Display spinner while data is loading
-6. **Extra Stretch Goal** Wrap three apps (this one, REST API, event generator) into AWS Websockets service. It'll help to avoid having `Fetch latest events` button.
+6. **Extra Stretch Goal.** Wrap three apps (this one, REST API, event generator) into AWS Websockets service. It'll help to avoid having `Fetch latest events` button.
