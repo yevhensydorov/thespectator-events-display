@@ -1,49 +1,103 @@
 # thespectator-events-display
 
-Create react app boilerplate
-`npx create-react-app . --template typescript`
+The Spectator events viewer
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Boilerplate
 
-## Available Scripts
+Boilerplate for this project was create using Create React App for Typescript <br />
+`npx create-react-app APP_NAME --template typescript`
 
-In the project directory, you can run:
+## Setup and run the project locally
 
-### `yarn start`
-
-Runs the app in the development mode.<br />
+Clone the project to your local machine <br />
+`git clone https://github.com/yevhensydorov/thespectator-events-display.git` <br />
+<br />
+Go to the project directory <br />
+`cd thespectator-events-display` <br />
+<br />
+Install project dependencies <br />
+`npm install` <br />
+<br />
+In the project directory, you need to create `.env` file with next value: <br />
+`REACT_APP_API_SERVER_URL=EVENTS_LIST_LINK_FROM_THE_EMAIL` <br />
+<br />
+Run the project <br />
+`yarn start` <br />
+It'll run the app in the development mode.<br />
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
-
 The page will reload if you make edits.<br />
 You will also see any lint errors in the console.
 
-### `yarn test`
+## Tests
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+To run the tests you can use command <br />
+`yarn test` <br />
+It'll launch the test runner in the interactive watch mode.<br />
 
-### `yarn build`
+## Explanation
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
+It's React app, which uses Typescript, React Hooks and React Context APIs
 
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
+### root
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+The Root of the project is `App.tsx` file where we are displaying a heading element and rendering `TableGenerator` component. <br />
 
-### `yarn eject`
+### logic, data management and components
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+All the logic and data management lives in the `index.tsx` file in the `Tablegenerator` folder. We are using `useState` hook for initializing the state of our functional component. <br />
+Initial state object should be:
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+```js
+{
+  status: Statuses.loading,
+  payload: [],
+  errorMessage: null,
+}
+```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+`status` property will help us to handle the different state of our response, and display the right elements users. I have created `Statuses` _ENUM_ for better management named constants. <br />
+`payload` property will have results of our response, actual data from the REST API. </br>
+`errorMessage` property can be used for error handling and displaying messages to users. <br>
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+`fetchEvents` function is doing basic fetch. In case if everything is ok, we are changing status to loaded, getting our payload array and setting errorMessage to null. If there is an error, we set the status to error, leave payload as an empty array and setting errorMessage to the error message which comes from the API response.
 
-## Learn More
+#### Status Loading
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+There will be div with the text `Loading...` while we are fetching our data.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+#### Error handling
+
+There will be div with the text `Error while fetching events` if something is wrong with the API response.
+
+#### Displaying the table
+
+If our status is `loaded` we are displaying `Fetch latest events` button and the table. <br />
+`Fetch latest events` button is provided for updating the table if the new events occur. Button has _onClick_ handler which is invoking `fetchEvents` function to get updated values.<br />
+The Table itself is rendering in the `<Table />` component which has a standart structure with table head and table body. The interesting thing here that I wrapped `<Table />` component into the one of the latest React feature _Context_. `EventContext` creator lives in the `srs/contexts` folder.<br />
+
+```js
+<EventContext.Provider value={results}>
+  <Table />
+</EventContext.Provider>
+```
+
+I did it for easier data management for events. If in the future we will have several children of `<Table />` components, all of them will have the way to get the data which come from our API. Otherwise, we would need to do a _prop drilling_ which is a bad practice.<br />
+
+`<Table />` component has a children `<EventRow />` where we are generating/mapping our event rows(Table rows). To get the data we are using `useContext` hook from react.<br />
+
+```js
+const results = useContext(EventContext);
+```
+
+After getting the results, we just need to loop through them and generate every row. Also, I've changed the display of Dates values to the _DD/MM/YYYY_ format for the better readability reasons.
+
+## Future improvements
+
+If I had more time I'd create next features/improvements:
+
+1. Mock Tests for fetch and update elements in the table
+2. Whole CRUD availability to manage events (show one event route, delete an event, update event)
+3. App definitely needs styles to add
+4. Better error handling to display an exact message which comes from the API
+5. Display spinner while data is loading
+6. **Extra Stretch Goal** Wrap three apps (this one, REST API, event generator) into AWS Websockets service. It'll help to avoid having `Fetch latest events` button.

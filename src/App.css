@@ -5,3 +5,17 @@
 .App-header {
   min-height: 100vh;
 }
+
+table {
+  border-collapse: collapse;
+}
+
+table,
+th,
+td {
+  border: 1px solid black;
+}
+
+button {
+  margin-bottom: 16px;
+}
